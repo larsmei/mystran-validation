@@ -14,18 +14,13 @@ for deck in "$ROOT/eingabe"/*; do
     fail=$((fail+1))
     continue
   fi
-  ref="$ROOT/referenz_f06/${stem}.F06"
-  out="$ROOT/runs/${stem}.F06"
-  if [[ ! -f "$out" ]]; then
-    # some builds write uppercase/lowercase variants
-    out=$(ls "$ROOT/runs/${stem}".F06 "$ROOT/runs/${stem}".f06 2>/dev/null | head -1 || true)
-  fi
-  if [[ -z "${out}" || ! -f "$out" ]]; then
+  out=$(ls "$ROOT/runs/${stem}".F06 "$ROOT/runs/${stem}".f06 2>/dev/null | head -1 || true)
+  if [[ -z "${out}" ]]; then
     echo "no F06 produced for $stem"
     fail=$((fail+1))
     continue
   fi
-  if python3 "$ROOT/run_validation.py" --f06 "$out" --reference "$ref"; then
+  if python3 "$ROOT/run_validation.py" --f06 "$out" --expected-json "$ROOT/referenz_werte.json" --case "$stem"; then
     pass=$((pass+1))
   else
     fail=$((fail+1))
