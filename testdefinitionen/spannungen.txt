@@ -1,0 +1,56 @@
+# Spannungs-Testfaelle (MYSTRAN F06 / Upstream-Pfade)
+# Format analog MYSTRAN_Validation cases_*.txt
+#
+# BARSTRESSES: SA1-SA4, SB1-SB4, AXIAL
+# RODSTRESSES: AXIAL, TORSIONAL
+# BUSHSTRESSES: S1-S6
+# SOLIDSTRESSES: XX,YY,ZZ,XY,YZ,ZX,VONMISES  (CENTER oder CORNER)
+
+# bar_01: ein CBAR, Punktlast. End A Biegespannungen + Axial.
+pth; eingabe/bar_01.DAT; BARSTRESSES/EID/1/SA1;;  -8.697565E+02; 5e-5%
+pth; eingabe/bar_01.DAT; BARSTRESSES/EID/1/SA2;;   2.027083E+03; 5e-5%
+pth; eingabe/bar_01.DAT; BARSTRESSES/EID/1/SA3;;   8.697565E+02; 5e-5%
+pth; eingabe/bar_01.DAT; BARSTRESSES/EID/1/SA4;;  -2.027083E+03; 5e-5%
+pth; eingabe/bar_01.DAT; BARSTRESSES/EID/1/AXIAL;; 1.338525E+01; 5e-5%
+pth; eingabe/bar_01.DAT; BARSTRESSES/EID/1/SA-MAX;; 2.040468E+03; 5e-5%
+pth; eingabe/bar_01.DAT; BARSTRESSES/EID/1/SA-MIN;;-2.013698E+03; 5e-5%
+# End B der Lastseite: Biegespannung ~0, nur Axial
+pth; eingabe/bar_01.DAT; BARSTRESSES/EID/1/SB-MAX;; 1.338525E+01; 5e-5%
+
+# bush_01: CBUSH-Spannungen S1..S6
+pth; eingabe/bush_01.DAT; BUSHSTRESSES/EID/1/S1;;  4.577756E+02; 5e-5%
+pth; eingabe/bush_01.DAT; BUSHSTRESSES/EID/1/S2;; -3.723488E+04; 5e-5%
+pth; eingabe/bush_01.DAT; BUSHSTRESSES/EID/1/S3;;  4.528933E+03; 5e-5%
+pth; eingabe/bush_01.DAT; BUSHSTRESSES/EID/1/S5;;  8.643448E+04; 5e-5%
+pth; eingabe/bush_01.DAT; BUSHSTRESSES/EID/1/S6;;  8.494879E+05; 5e-5%
+
+# CROD mit aufgepraegter Verschiebung, Axialspannung = E*eps
+pth; eingabe/SB-RODDISPL-N-LOAD.DAT; RODSTRESSES/EID/1/AXIAL;;  2.162162E+03; 5e-5%
+pth; eingabe/SB-RODDISPL-N-LOAD.DAT; RODSTRESSES/EID/2/AXIAL;;  2.594595E+03; 5e-5%
+pth; eingabe/SB-RODDISPL-N-LOAD.DAT; RODSTRESSES/EID/3/AXIAL;;  3.243243E+03; 5e-5%
+pth; eingabe/SB-RODDISPL-N-LOAD.DAT; RODSTRESSES/EID/4/AXIAL;; -2.000000E+03; 5e-5%
+pth; eingabe/SB-RODDISPL-N-LOAD.DAT; RODSTRESSES/EID/5/AXIAL;;  0.0; 1e-8
+pth; eingabe/SB-RODDISPL-N-LOAD.DAT; RODSTRESSES/EID/*/TORSIONAL;; 0.0; 1e-8
+
+# RBE2 + CROD
+pth; eingabe/SB-RBE2-01-CROD-03.DAT; RODSTRESSES/EID/14/AXIAL;; 9.000000E+04; 5e-5%
+pth; eingabe/SB-RBE2-01-CROD-03.DAT; RODSTRESSES/EID/21/AXIAL;; 1.100000E+05; 5e-5%
+pth; eingabe/SB-RBE2-01-CROD-03.DAT; RODSTRESSES/EID/43/AXIAL;; 0.0; 1e-8
+
+# CBAR + GRAV, Element 12 End A
+pth; eingabe/SB-BAR-GRAV.DAT; BARSTRESSES/EID/12/SA1;; -1.612500E+01; 5e-5%
+pth; eingabe/SB-BAR-GRAV.DAT; BARSTRESSES/EID/12/SA2;; -4.612500E+01; 5e-5%
+pth; eingabe/SB-BAR-GRAV.DAT; BARSTRESSES/EID/12/AXIAL;; 6.030000E+01; 5e-5%
+pth; eingabe/SB-BAR-GRAV.DAT; BARSTRESSES/EID/12/SA-MAX;; 1.064250E+02; 5e-5%
+
+# HEXA8 NAS S30 (ein Element, aufgepraegter Dehnungszustand)
+# Center: Sigma-yy = 1.712199e4, von Mises gleich, xx/zz/tau ~ 0
+pth; eingabe/NAS S30 hexa.bdf; SOLIDSTRESSES/EID/1/CENTER/YY;; 1.712199E+04; 5e-5%
+pth; eingabe/NAS S30 hexa.bdf; SOLIDSTRESSES/EID/1/CENTER/VONMISES;; 1.712199E+04; 5e-5%
+pth; eingabe/NAS S30 hexa.bdf; SOLIDSTRESSES/EID/1/CENTER/XX;; 0.0; 1e-6
+pth; eingabe/NAS S30 hexa.bdf; SOLIDSTRESSES/EID/1/CENTER/ZZ;; 0.0; 1e-6
+
+# Offizielle analytische Corner-Tests (Upstream cases_vic.txt),
+# Deck: vic/1/NAS S30 corner stress strain hex8.bdf
+# pth; SOLIDSTRESSES/EID/1/CORNER/1-8/YY = 2
+# pth; SOLIDSTRESSES/EID/1/CORNER/1-8/ZZ = 3
