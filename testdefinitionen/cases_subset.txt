@@ -1,0 +1,18 @@
+mys;    Benchmark/bar_01.DAT;
+mys;    Benchmark/bush_01.DAT;
+mys;    Benchmark/case_0001.DAT;                           F = 1e-14
+mys;    Benchmark/case_0002.DAT;
+mys;    Benchmark/EB-BAR-CC-GIV.DAT;
+mys;    Benchmark/ES-BAR-CC-GIV.DAT;
+mys;    Benchmark/SB-BAR-GRAV.DAT;
+mys;    Benchmark/SB-HEXA08-02-02-020-CANT-AR1-RED-2x2x2.DAT;
+mys;    Benchmark/SB-RBE2-01-CROD-03.DAT;
+mys;    Benchmark/SB-RBE3-01-CBAR-08.DAT;                 E = 1e-10
+mys;    Benchmark/SB-RODDISPL-N-LOAD.DAT;
+mys;    Benchmark/SB-RODDISPL-W-LOAD.DAT;
+pth;    vic/1/NAS S30 gravity.bdf;    SC/1/DISPLACEMENTS/GID/6/TX;;   0.000000185605573878158;    2e-5%
+pth;    vic/1/NAS S30 gravity.bdf;    SC/1/DISPLACEMENTS/GID/6/TY;;  -0.000000274881854913551;    2e-5%
+pth;    vic/1/NAS S30 gravity.bdf;    SC/1/DISPLACEMENTS/GID/6/TZ;;   0.000000185605573878158;    2e-5%
+pth;    vic/1/NAS S30 gravity.bdf;    SC/1/DISPLACEMENTS/GID/72/TX;;  0.000000206192390572239;    2e-5%
+pth;    vic/1/NAS S30 gravity.bdf;    SC/1/DISPLACEMENTS/GID/72/TY;; -0.00000030171801128011;     2e-5%
+pth;    vic/1/NAS S30 gravity.bdf;    SC/1/DISPLACEMENTS/GID/72/TZ;;  0.000000206192390572239;    2e-5%
