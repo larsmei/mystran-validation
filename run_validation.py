@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Compare a MYSTRAN F06 against the packaged reference F06."""
+"""Compare a MYSTRAN F06 against a packaged reference F06 or JSON."""
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 from pathlib import Path
@@ -53,8 +54,7 @@ def parse_f06(path: Path) -> dict:
             m = GRID_LINE.match(line)
             if m:
                 gid = int(m.group(1))
-                vals = [_f(m.group(k)) for k in range(3, 9)]
-                displ[(subcase, gid)] = vals
+                displ[(subcase, gid)] = [_f(m.group(k)) for k in range(3, 9)]
             elif line.strip() == "" and displ:
                 mode = None
         elif mode == "eigen":
@@ -63,6 +63,18 @@ def parse_f06(path: Path) -> dict:
                 eigens[int(m.group(1))] = (_f(m.group(2)), _f(m.group(4)))
             elif line.strip().startswith(">>") or "OUTPUT FOR EIGENVECTOR" in line:
                 mode = None
+    return {"displacements": displ, "eigenvalues": eigens}
+
+def load_expected_json(path: Path, case: str) -> dict:
+    blob = json.loads(path.read_text())
+    if case not in blob:
+        raise SystemExit(f"case {case!r} not in {path}")
+    raw = blob[case]
+    displ = {}
+    for key, vals in raw.get("displacements", {}).items():
+        sc, gid = key.split(":")
+        displ[(int(sc), int(gid))] = [float(x) for x in vals]
+    eigens = {int(k): (float(v[0]), float(v[1])) for k, v in raw.get("eigenvalues", {}).items()}
     return {"displacements": displ, "eigenvalues": eigens}
 
 def close(a: float, b: float, rtol: float, atol: float) -> bool:
@@ -92,7 +104,9 @@ def compare(got: dict, ref: dict, rtol: float, atol: float) -> list:
 def main() -> int:
     ap = argparse.ArgumentParser(description="MYSTRAN validation helper")
     ap.add_argument("--f06", type=Path)
-    ap.add_argument("--reference", type=Path)
+    ap.add_argument("--reference", type=Path, help="reference F06")
+    ap.add_argument("--expected-json", type=Path, help="referenz_werte.json")
+    ap.add_argument("--case", type=str, help="case key inside expected JSON")
     ap.add_argument("--extract", type=Path)
     ap.add_argument("--rtol", type=float, default=5e-5)
     ap.add_argument("--atol", type=float, default=1e-8)
@@ -106,9 +120,16 @@ def main() -> int:
         for mode, (lam, hz) in data["eigenvalues"].items():
             print(f"  mode {mode}: lambda={lam:.6e}  f={hz:.6e} Hz")
         return 0
-    if not args.f06 or not args.reference:
-        ap.error("need --f06 and --reference, or --extract")
-    fails = compare(parse_f06(args.f06), parse_f06(args.reference), args.rtol, args.atol)
+    if not args.f06:
+        ap.error("need --f06")
+    if args.expected_json:
+        case = args.case or args.f06.stem
+        ref = load_expected_json(args.expected_json, case)
+    elif args.reference:
+        ref = parse_f06(args.reference)
+    else:
+        ap.error("need --reference or --expected-json")
+    fails = compare(parse_f06(args.f06), ref, args.rtol, args.atol)
     if fails:
         print(f"FAIL ({len(fails)} differences)")
         for line in fails[:50]:
